@@ -1,0 +1,344 @@
+ DDL(Data Defination Language) 
+- a set of statements that allows the user to define or modify data structure and objects .
+- Commands used 
+-CREATE
+-ATER
+-DROP
+-RENAME
+-TRUNCATE
+1> Create - used to create a table 
+Syntax - CREATE TABLE table_name (Column_name data_type);
+Example - CREATE TABLE person(PersonID INT, LastNAme varchar(255), Firstname varchar(255));
+2>ALTER - Used to change table structure .ie. you can add , delete,rename a column.
+Syntax - ALTER TABLE table_name OPERATION(to be done)
+ALTER TABLE sales ADD column DATE_of_purchase DATE;
+ALTER TABLE sales DROP Column Middle_name;
+ALTER TABLE sales MODIFY column CustomerID INT;  
+ALTER TABLE sales RENAME COLUMN oldname to newname;
+3>DROP - To delete a table with structure and data 
+Syntax - DROP TABLE table_name ;
+4>Rename - Used to rename a object 
+Syntax - RENAME TABLE table_name to New_table_name ;
+5>Truncate - Used to delete the data in a table . After using this all the data in a table get removed but the structure of table still exits .
+Syntax - TRUNCATE TABLE table_name;
+
+
+New CLAUSES USED
+1>AUTO_INCREMENT (type of constraint) - For suto increasing the value --PRIMARY key and index
+2>CHANGE - for chaning the column name and constraint 
+3>DEFAULT (type of constraint)- for setting the value of field to a constant value 
+4> IN & NOT IN
+5>LIKE & NOT LIKE
+6>BETWEEN.... AND...  & NOT BETWEEN ..... AND ......
+7>EXISTS....   & NOT EXISTS
+8> IS NULL    & IS NOT NULL 
+9> !=  or <> --- NOT EQUAL operators 
+10> SIMILARY <  --- less than
+> --- Greater than
+<= & >=
+11>  Aggregate Function - COUNT(),SUM(),MIN(),MAX(),AVG()
+12>GROUP BY
+13>HAVING-- Always used after group by .... IF they is any statement related to aggregate function .....
+14> ROUND - to round the numeric value obtained by using aggregate fundtion 
+15> IFNULL & COALESCE  
+
+
+
+
+
+⦁	Createing a Database - To work in SQL we start with creating a database.
+Example code - CREATE DATABASE Sales;
+Now for creating functional data base we should have some table . For creating a table in new data base we would user CREATE commands but will editor know you creating table for which database . SO we will use USE commands before writing the create table commands.
+Example syntax - USE Sales;
+⦁	To create a table
+Use sales;
+CREATE TABLE Sales
+(purchase_number INT PRIMARY KEY AUTO_INCREMENT,
+date_of_purchase DATE Not null,
+Customer_id INT,
+item_code varchar(10) NOT NULL 
+);
+⦁	AUTO_INCREMENT - This funaction automatically increase the value of next record to be entered by 1. This very usefull as you don't have to insert the purchase no evry time a data has been entered in the record. It cannot be applied to any column . In case to it to work the colum should be a PRIMARY KEY or INDEX or UNIQUE KEY.
+⦁	How assign constraint after Table has been created.
+ALTER TABLE Sales
+ADD FOREIGN KEY  (customer_id)  customers(cutomer_id) ON DELETE CASCADE;
+------Things to remember applying foregin key constraint .----------
+1> The name of column does not matter . You have to only focus on the data type used and inofrmation stored in it as record . they should be same .
+2> Foregin key of a child table should always references to primary key of parent table .
+ON DELETE CASCADE -- This caluse or command if not necesaary to use to its an best practice to use . In simple way it can be explained if any specific value from parent table's primary key has been deleted , all the records from the child table referring to this value will be removed as well.
+⦁	For removing the foreign key -
+Example syntax -ALTER TABLE sales DROP FOREIGN KEY sale_ibfk_1;
+⦁	For removing the PRIMARY key -
+Example syntax- ALTER TABLE table_name DROP PRIMARY KEY ;
+⦁	UNIQUE KEY - Ensure that a column contains no duplicate value .
+Example syntax -ALTER TABLE customers Add UNIQUE KEY (Email_address); 
+⦁	DEFAULT CONSTRAINT -- helps us assign a default value to every row of a column. example - you take attendace_sheet - by deafult it will absent until the user make his/her attendance 
+
+Syntax Example - 
+ALTER TABLE Customers 
+CHANGE COLUMN number_of_complaint number_of_complaint INT DEFAULT 0;
+During creating a table
+CREATE TABLE cutomers(
+customer_id varchar(255)
+first_name vrachar(255)
+last_na,e(255)
+number_of_complaints INT DEFAULT 0          
+PRIMARY KEY (customer_id));
+
+⦁	For removing the default constaint ------ ALTER TABLE customers ALTER COLUMN column_name DROP DEFAULT;
+
+Note --- ENUM string data format -- (enmerate)-- ENUM('M','F') --- my sql will show erro if you attempt to insert any value different from "M"or"F".
+DECIMAL - DECIMAL(5,3) 5 refers to percision i.e no of digit in a no . 3 refer to scale i.e no of digit after decimal. Syntax DECIMAL(Precision,scale) .--- example of Fixed-point data(Best for representing salary)
+Float(5,3) - Will round the value the value after 3 decimal point .
+DATE & DATETIME - for storing date or data and time together.
+BLOB (Binary Large OBject) -- refer to file of binary data. This involes saving a file in a record . 
+
+
+Note - SQL will execute AND statement prior to OR clause. So always use parenthesis before using them .
+
+⦁	IN CLAUSE - Functions same as '=' operator . Diffrence between = & IN operator is that IN can be used to denote multiple value . It can be better understood by an example .----
+Syntax --- 
+SELECT * from employees
+where first_name IN ('Cathie','Mark','Nathan');
+Note - The IN operator allows SQL to return the names written in parentheses, if they exist in our table .
+ 
+--- IN operator is used and preferred over OR for multiple option search as time taken is less....
+⦁	NOT IN CLAUSE - Functions oposite of IN .Will give you an output where you won't find the listed above name in the table.
+⦁	LIKE CLAUSE ---- Function is well known . New things pattern matching .... suppose staement is ----  
+Where First_name like ('mar%') --- This wil search all the value starting with MAR 
+Where First_name like ('%mar') --- This will search all the value ending with mar. 
+%- is a substitute for a sequence of character
+_- helps you match a single character.
+Example -- Where  First_name like ('MAR_');-- --   This will search for all the record that starts with MAR is of 4 letter.
+
+⦁	BETWEEN... AND.... 
+GIves us the values between two quantity.SIMILARy NOT BETWEEN...AND....   EXAMPLE SYNTAX--
+SELECT * from Salaries
+WHERE salary BETWEEN '66000' AND '70000';
+
+⦁	!= or <> (NOT equal Operator )
+It can be used to refer to a value that is not equla to to something .
+Example Syntax --  
+SELECT * from employees
+where first_name <> 'MARK';
+
+⦁	COUNT() -used for counting the no of records.  ---- It will not count null value .
+Syntax--- SELECT COUNT(DISTINCT first_name) from employees.
+⦁	GROUP BY - Used to group result according to specific field or fields.
+--Note-- It should be place immediately after where condition,if any, and just before the ORDER BY  clause.
+SYNTAX --- SELECT column_name(s)
+FROM table_name
+WHERE conditions 
+GROUP BY column_name(s)
+ORDER BY Column_name(s);
+ NOTE -- GROUP BY and DISTINCT  have same functionality but alway prefer GROUP by .
+
+⦁	Having ---  it is frequently used by GROUP BY clauses. It refines the output that do not satisfy a certain condition . between GROUP BY and ORDER by clause.
+---Note - Function of having and where clause is same but Having can be used for sub  function that comes under aggreate functions .... WHERE clause gives you error there.
+SYNTAX --- 
+Select * ,AVG(salary)from salaries 
+GROUP BY emp_no
+HAVING AVG(salary)>120000
+order by emp_no;
+
+** You can also insert data from different table in a table . 
+Syntax --  INSERT INTO table_name (coulumn_names.....)
+                    SELECT column_name FROM table_name2
+                    WHERE condition;
+
+** Update - used to update records..
+Syntax --- UPDATE table_name SET column_name1 ='value1', column_name2 ='value2'
+                      WHERE condition;
+⦁	NOTE-- Where clause is very important when using UPDATE clause.
+ROUND - Function used to round the numeric fundtion to the point that me need.
+SYNTAX -- SELECT ROUND(AVG(salary)) from salaries
+                      WHERE from_date >'1999-01-01';
+OR
+select ROUND(AVG(salary),2) from salaries
+where from_date >'1999-01-01';
+⦁	IFNULL OR COALESCE - Works or used in case there are null values in a column and you have to replace it with some other text .
+Basic functionality if IFNULL --It will replace the null value if any with the value you want .
+SYNTAX - 
+SELECT 
+    dept_no, dept_name, IFNULL(depy_manager, 'Not given')
+FROM
+    departments;
+ 
+
+COALESCE --- This function contains basically three argument . It first checks if the first aregument is null or not. If yes it replaces it with the second argument . If Second argument is also null it replaces it with the third one.
+Note - If you only give two argument in COALESCE, It functions same as IFNULL FUNCTION.
+SELECT 
+    dept_no, dept_name, COALESCE(depy_manager, dept_name, 'N/A')
+FROM
+    departments;
+  
+
+JOINS    
+1>INNER JOIN
+⦁	Inner Joins extract only records in which the values in the related columns match
+⦁	NUll values, or values appearing in just one of the two tables and not appearing in the other, are not displayed.
+⦁	INNER JOIN Or  JOIN - editor will consider then as INNER JOIN only
+Syntax ---
+SELECT t1.column_name,t2.column_name,.....
+FROM table1 as t1 
+INNER JOIN 
+table2 as t2 ON t1.column_name=t2.column_name;
+NOTE - USE GROUP BY FOR REMOEVING DUPLICATE
+
+2> LEFT JOIN /LEFT OUTER JOIN
+⦁	As per the name suggest it brings  all the data of left table and all the matching values from the two table.
+⦁	The Order of the table in the code also plays a vital role here so pay more attention on that ..Reverting them can  cause some effect
+Syntax--
+SELECT t1.column_name,t2.column_name,.....
+FROM table1 as t1 
+LEFT JOIN 
+table2 as t2 ON t1.column_name=t2.column_name;
+NOte - Here full records of table1 (as it is near to from)and matching records of table1 and table2 will show up.
+
+3>RIGHT JOIN
+⦁	Functions similary to left join but opposite . Display all the result of right site table of join  and the common records on both the table.
+SYNTAX-
+SELECT t1.column_name,t2.column_name,.....
+FROM table1 as t1 
+RIGHT  JOIN 
+table2 as t2 ON t1.column_name=t2.column_name;
+
+ 4>   CROSS JOIN 
+⦁	Connects all the values not just the once those are matching .
+⦁	It can be called as cartesian product of values of two or more sets.
+SELECT t1.column_name,t2.column_name,.....
+FROM table1 as t1 
+CROSS JOIN 
+table2 as t2;
+
+Note --- You can join more than two table using join function .
+SELECT e.firstname,  t.title,  m.fromdate,d.deptname
+FROM employee e 
+JOIN
+dept_manager m ON e.emp_np=m.emp_no
+JOIN
+departments d ON m.dept_no = d.dept_no
+JOIN
+titles t ON e.emp_no=t.emp_no
+WHERE t.titlr ='Manager'
+
+UNION ALL  AND UNION
+Used to join two or more select statement vertically.
+We have to select same no of columns from each table.
+the column selected should have same no , same name,and should be in same order, and should contain related data type.
+SYNTAX-
+SELECT 
+	N columns
+FROM
+	table_1
+UNION ALL 
+SELECT
+	N columns
+FROM 
+	table_2; 
+⦁	SUBQUIRES
+SELECT 
+    A.*
+FROM
+    (SELECT 
+        e.emp_no,
+            d.dept_no,
+            (SELECT 
+                    emp_no
+                FROM
+                    dept_manager
+                WHERE
+                    emp_no = 110022) AS manager_no
+    FROM
+        employees e
+    JOIN dept_emp d ON e.emp_no = d.emp_no
+    WHERE
+        e.emp_no <= '10020'
+    GROUP BY emp_no) AS A 
+UNION SELECT 
+    B.*
+FROM
+    (SELECT 
+        f.emp_no,
+            g.dept_no,
+            (SELECT 
+                    emp_no
+                FROM
+                    dept_manager
+                WHERE
+                    emp_no = 110039) AS manager_no
+    FROM
+        employees f
+    JOIN dept_emp g ON f.emp_no = g.emp_no
+    WHERE
+        f.emp_no >= '10021'
+            AND f.emp_no <= '10040'
+    GROUP BY emp_no) AS B 
+UNION SELECT 
+    C.*
+FROM
+    (SELECT 
+        q.emp_no,
+            w.dept_no,
+            (SELECT 
+                    emp_no
+                FROM
+                    dept_manager
+                WHERE
+                    emp_no = 110039) AS manager_no
+    FROM
+        employees q
+    JOIN dept_emp w ON q.emp_no = w.emp_no
+    WHERE
+        q.emp_no = '110022') AS C 
+UNION SELECT 
+    D.*
+FROM
+    (SELECT 
+        r.emp_no,
+            t.dept_no,
+            (SELECT 
+                    emp_no
+                FROM
+                    dept_manager
+                WHERE
+                    emp_no = 110039) AS manager_no
+    FROM
+        employees r
+    JOIN dept_emp t ON r.emp_no = t.emp_no
+    WHERE
+        r.emp_no = '110039') AS D
+⦁	Self Join ---- it means joins between same table .It is prefered if a column in a table is referenced in the same table .
+Example - SELECT DISTINCT e.* from emp_manager  e JOIN emp_manager a 
+ 		ON e.emp_manager=a.manager_no 
+		WHERE e.emp_manager= a.manager_no;
+
+Views - views are virtual table whose content are obtained from an existing table or tables   called base table. The retrival happens through SQL table and does'nt store any data memory.
+you can use normal select state ment to revtrive a view after its creation.
+View saves a lot of execution time . Its a dynamic table and reflects the changes done in base table as soon as changes are done . 
+SYNTAX --  
+CREATE OR REPLACE VIEW V_total_avg_salary_manage AS
+SELECT ROUND(AVG(b.salary),2) FROM dept_manager a JOIN salaries b ON
+ a.emp_no=b.emp_no;
+The above synatx or example can be used to create or update an view . For delete or drop the vew use .
+To DROP View
+DROP VIEW VIEW_NAME;
+CREATE OR REPLACE VIEW <view name> AS (SELECT query)
+[WITH READ ONLY CONSTRAINT <constraint name>];
+----- WITH READ ONLY CONSTRAINT --- donot allow any one to update the the current existing view ------
+
+Stored Routines
+Stored Routines are nothing but a peice of code stored in SQL server database which can be called or invoked at the time of need .
+There are two type of stored routine -
+1>Stored Procedure 
+2>Functions --- built in or manully built 
+
+1>Stored Procedure 
+First --- important - ';' we used this as a statement terminator or delimiter. It can be changed by tying to DELIMITER $$ we can you this dollar symbol as your delimiter.  ---- This had to done or say perfered to be as your stored procedure may also contain some dilimiters to show end of an single statement . If you use same dilimiter in you normal query and you procedure it might happen that the editor will move to other statement before finishing the statements in stored procedure.
+CALCULATED COLUMN IN SQL
+
+
+
+
+
+
